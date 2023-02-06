@@ -1,8 +1,8 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-import 'GameModel.dart';
+import 'ItemModel.dart';
 
-class GamesDatabase {
+class ItemsDatabase {
   static int database_version = 1;
   static String database_name = 'games.db';
 
@@ -19,21 +19,21 @@ class GamesDatabase {
     );
   }
 
-  // insert game
-  static Future<void> insertGame(Game game) async {
+  // insert Item
+  static Future<void> insertItem(Item item) async {
     final Database db = await open();
     await db.insert(
       'games',
-      game.toMap(),
+      item.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
 
-  static Future<List<Game>> getGames() async {
+  static Future<List<Item>> getItems() async {
     final Database db = await open();
     final List<Map<String, dynamic>> maps = await db.query('games');
     return List.generate(maps.length, (i) {
-      return Game(
+      return Item(
         gameId: maps[i]['gameId'],
         name: maps[i]['name'],
         section: maps[i]['section'],
@@ -44,17 +44,17 @@ class GamesDatabase {
     });
   }
 
-  static Future<void> updateGame(Game game) async {
+  static Future<void> updateItem(Item item) async {
     final db = await open();
     await db.update(
       'games',
-      game.toMap(),
+      item.toMap(),
       where: "gameId = ?",
-      whereArgs: [game.gameId],
+      whereArgs: [item.gameId],
     );
   }
 
-  static Future<void> deleteGame(int id) async {
+  static Future<void> deleteItem(int id) async {
     final db = await open();
     await db.delete(
       'games',

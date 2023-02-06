@@ -1,4 +1,4 @@
-class Game {
+class Item {
   int gameId;
   String name;
   String section;
@@ -6,7 +6,7 @@ class Game {
   String numberOfPlayers;
   int availableStock;
 
-  Game({
+  Item({
     required this.gameId,
     required this.name,
     required this.section,
@@ -15,8 +15,8 @@ class Game {
     required this.availableStock,
   });
 
-  factory Game.fromJson(Map<String, dynamic> json) {
-    return Game(
+  factory Item.fromJson(Map<String, dynamic> json) {
+    return Item(
       gameId: json['gameId'],
       name: json['name'],
       section: json['section'],
@@ -48,6 +48,6 @@ class Game {
 
   @override
   toString() {
-    return 'Game{gameId: $gameId, name: $name, section: $section, recommendedAge: $recommendedAge, numberOfPlayers: $numberOfPlayers, availableStock: ${availableStock.toString()}';
+    return 'Item{gameId: $gameId, name: $name, section: $section, recommendedAge: $recommendedAge, numberOfPlayers: $numberOfPlayers, availableStock: ${availableStock.toString()}';
   }
 }

@@ -1,50 +1,50 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'GameModel.dart';
+import 'ItemModel.dart';
 import 'package:http/http.dart' as http;
 
-class GamesServer {
-  static Future<void> insertGame(Game game) async {
+class ItemsServer {
+  static Future<void> insertItem(Item item) async {
     await http.post(
-      Uri.parse('http://localhost:3001/games'),
+      Uri.parse('http://192.168.43.182:3001/games'),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: json.encode(game.toJson()),
+      body: json.encode(item.toJson()),
     );
   }
 
-  static Future<List<Game>> getGames() async {
+  static Future<List<Item>> getItems() async {
     final response =
-        await http.get(Uri.parse('http://localhost:3001/games'), headers: {
+        await http.get(Uri.parse('http://192.168.43.182:3001/games'), headers: {
       'Content-Type': 'application/json; charset=UTF-8',
     });
 
     if (response.statusCode == 200) {
       // for some ever fucking reason, putting those in the same line makes flutter forget the return type of the streams
       List decodedResponse = json.decode(response.body);
-      List<Game> games =
-          decodedResponse.map((game) => Game.fromJson(game)).toList();
+      List<Item> items =
+          decodedResponse.map((item) => Item.fromJson(item)).toList();
 
-      return games;
+      return items;
     } else {
-      throw Exception('Failed to load games');
+      throw Exception('Failed to load items');
     }
   }
 
-  static Future<void> updateGame(Game game) async {
+  static Future<void> updateItem(Item item) async {
     await http.put(
-      Uri.parse('http://localhost:3001/games/${game.gameId}'),
+      Uri.parse('http://192.168.43.182:3001/games/${item.gameId}'),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: json.encode(game.toJson()),
+      body: json.encode(item.toJson()),
     );
   }
 
-  static Future<http.Response> deleteGame(int id) async {
+  static Future<http.Response> deleteItem(int id) async {
     return await http.delete(
-      Uri.parse('http://localhost:3001/games/$id'),
+      Uri.parse('http://192.168.43.182:3001/games/$id'),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
       },

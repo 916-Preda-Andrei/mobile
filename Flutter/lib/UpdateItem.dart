@@ -1,23 +1,28 @@
 import 'package:flutter/material.dart';
 
-import 'GameModel.dart';
+import 'ItemModel.dart';
 
-class AddGamePage extends StatefulWidget {
-  const AddGamePage({super.key});
+class UpdateItemPage extends StatefulWidget {
+  Item item;
+  UpdateItemPage({super.key, required this.item});
 
   @override
-  AddGameState createState() => AddGameState();
+  UpdateItemState createState() => UpdateItemState(item);
 }
 
-class AddGameState extends State<AddGamePage> {
+class UpdateItemState extends State<UpdateItemPage> {
   final formKey = GlobalKey<FormState>();
-  Game game = Game(
+  Item item = Item(
       gameId: -1,
       name: '',
       section: '',
       recommendedAge: '',
       numberOfPlayers: '',
       availableStock: 0);
+
+  UpdateItemState(Item _item) {
+    item = _item;
+  }
 
   _form() {
     return Container(
@@ -28,9 +33,10 @@ class AddGameState extends State<AddGamePage> {
           children: [
             TextFormField(
               decoration: const InputDecoration(
-                labelText: 'Game Name',
+                labelText: 'Item Name',
               ),
-              onSaved: (value) => setState(() => game.name = value!),
+              initialValue: item.name,
+              onSaved: (value) => setState(() => item.name = value!),
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter a non-empty name';
@@ -41,12 +47,13 @@ class AddGameState extends State<AddGamePage> {
             ),
             TextFormField(
               decoration: const InputDecoration(
-                labelText: 'Game Section',
+                labelText: 'Item Section',
               ),
-              onSaved: (value) => setState(() => game.section = value!),
+              initialValue: item.section,
+              onSaved: (value) => setState(() => item.section = value!),
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter a non-empty game section';
+                  return 'Please enter a non-empty item section';
                 }
 
                 return null;
@@ -56,7 +63,8 @@ class AddGameState extends State<AddGamePage> {
               decoration: const InputDecoration(
                 labelText: 'Recommended Age',
               ),
-              onSaved: (value) => setState(() => game.recommendedAge = value!),
+              initialValue: item.recommendedAge,
+              onSaved: (value) => setState(() => item.recommendedAge = value!),
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter a non-empty Recommended Age';
@@ -69,7 +77,8 @@ class AddGameState extends State<AddGamePage> {
               decoration: const InputDecoration(
                 labelText: 'Number of Players',
               ),
-              onSaved: (value) => setState(() => game.numberOfPlayers = value!),
+              initialValue: item.numberOfPlayers,
+              onSaved: (value) => setState(() => item.numberOfPlayers = value!),
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter a non-empty number of players';
@@ -82,8 +91,9 @@ class AddGameState extends State<AddGamePage> {
               decoration: const InputDecoration(
                 labelText: 'Available Stock',
               ),
+              initialValue: item.availableStock.toString(),
               onSaved: (value) => setState(() {
-                game.availableStock = int.tryParse(value!)!;
+                item.availableStock = int.tryParse(value!)!;
               }),
               validator: (value) {
                 if (value == null ||
@@ -99,17 +109,16 @@ class AddGameState extends State<AddGamePage> {
                 width: 200,
                 margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
                 child: ElevatedButton(
-                    // style: ButtonStyle(padding:)
                     onPressed: () {
                       if (formKey.currentState!.validate()) {
                         formKey.currentState!.save();
-                        Navigator.pop(context, game);
+                        Navigator.pop(context, item);
                       }
                     },
                     child: const Padding(
                       padding: EdgeInsets.all(16.0),
-                      child: Text('Add Game'),
-                    )))
+                      child: Text('Update Item'),
+                    ))),
           ],
         ),
       ),
@@ -120,7 +129,7 @@ class AddGameState extends State<AddGamePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add Game'),
+        title: const Text('Update Item'),
       ),
       body: _form(),
     );

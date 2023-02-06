@@ -2,10 +2,10 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 
-import 'AddGame.dart';
-import 'GameModel.dart';
-import 'UpdateGame.dart';
-import 'GamesList.dart';
+import 'AddItem.dart';
+import 'ItemModel.dart';
+import 'UpdateItem.dart';
+import 'ItemsList.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,11 +17,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Games List',
+      title: 'Items List',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Games List'),
+      home: const MyHomePage(title: 'Items List'),
     );
   }
 }
@@ -37,20 +37,20 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final formKey = GlobalKey<FormState>();
 
-  Future<List<Game>> gamesList = GamesList.getGames();
+  Future<List<Item>> itemsList = ItemsList.getItems();
 
-  gameListView() => Expanded(
+  itemListView() => Expanded(
       child: Card(
           margin: const EdgeInsets.all(10),
-          child: FutureBuilder<List<Game>>(
-              future: gamesList,
+          child: FutureBuilder<List<Item>>(
+              future: itemsList,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return ListView.builder(
                       padding: const EdgeInsets.all(5),
                       itemCount: snapshot.data!.length,
                       itemBuilder: (context, index) {
-                        Game game = snapshot.data![index];
+                        Item item = snapshot.data![index];
 
                         return Container(
                             padding: const EdgeInsets.all(10),
@@ -76,14 +76,14 @@ class _MyHomePageState extends State<MyHomePage> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text('Name: ${game.name}'),
-                                      Text('Section: ${game.section}'),
+                                      Text('Name: ${item.name}'),
+                                      Text('Section: ${item.section}'),
                                       Text(
-                                          'Recommended Age: ${game.recommendedAge}'),
+                                          'Recommended Age: ${item.recommendedAge}'),
                                       Text(
-                                          'Number Of Players: ${game.numberOfPlayers}'),
+                                          'Number Of Players: ${item.numberOfPlayers}'),
                                       Text(
-                                          'Available Stock: ${game.availableStock.toString()}'),
+                                          'Available Stock: ${item.availableStock.toString()}'),
                                     ],
                                   ),
                                 ),
@@ -92,11 +92,11 @@ class _MyHomePageState extends State<MyHomePage> {
                                   children: [
                                     IconButton(
                                         onPressed: () =>
-                                            deleteGame(game.gameId),
+                                            deleteItem(item.gameId),
                                         color: Colors.red,
                                         icon: const Icon(Icons.delete)),
                                     IconButton(
-                                        onPressed: () => editGame(game),
+                                        onPressed: () => editItem(item),
                                         icon: const Icon(Icons.edit)),
                                   ],
                                 )
@@ -111,13 +111,13 @@ class _MyHomePageState extends State<MyHomePage> {
                 return const CircularProgressIndicator();
               })));
 
-  deleteGame(gameId) {
+  deleteItem(itemId) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text("Delete Game"),
-            content: const Text("Are you sure you want to delete this game?"),
+            title: const Text("Delete Item"),
+            content: const Text("Are you sure you want to delete this item?"),
             actions: [
               TextButton(
                   onPressed: () => Navigator.of(context).pop(),
@@ -128,7 +128,7 @@ class _MyHomePageState extends State<MyHomePage> {
               TextButton(
                   onPressed: () async {
                     try {
-                      await GamesList.deleteGame(gameId);
+                      await ItemsList.deleteItem(itemId);
                     } catch (e) {
                       // showDialog
                       showDialog(
@@ -150,7 +150,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           });
                     }
                     setState(() {
-                      gamesList = GamesList.getGames();
+                      itemsList = ItemsList.getItems();
                     });
                     Navigator.of(context).pop();
                   },
@@ -163,18 +163,18 @@ class _MyHomePageState extends State<MyHomePage> {
         });
   }
 
-  editGame(game) {
+  editItem(item) {
     Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return UpdateGamePage(game: game);
+      return UpdateItemPage(item: item);
     })).then((value) async {
       try {
-        await GamesList.updateGame(Game(
+        await ItemsList.updateItem(Item(
             name: value.name,
             section: value.section,
             recommendedAge: value.recommendedAge,
             numberOfPlayers: value.numberOfPlayers,
             availableStock: value.availableStock,
-            gameId: game.gameId));
+            gameId: item.ItemId));
       } catch (e) {
         // showDialog
         showDialog(
@@ -196,7 +196,7 @@ class _MyHomePageState extends State<MyHomePage> {
       }
 
       return setState(() {
-        gamesList = GamesList.getGames();
+        itemsList = ItemsList.getItems();
       });
     });
   }
@@ -205,23 +205,23 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Games List"),
+        title: const Text("Items List"),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            gameListView(),
+            itemListView(),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return const AddGamePage();
+            return const AddItemPage();
           })).then((value) async {
             try {
-              await GamesList.insertGame(Game(
+              await ItemsList.insertItem(Item(
                   name: value.name,
                   section: value.section,
                   recommendedAge: value.recommendedAge,
@@ -249,11 +249,11 @@ class _MyHomePageState extends State<MyHomePage> {
             }
 
             return setState(() {
-              gamesList = GamesList.getGames();
+              itemsList = ItemsList.getItems();
             });
           });
         },
-        tooltip: 'Add new game',
+        tooltip: 'Add new item',
         child: const Icon(Icons.add),
       ),
     );
