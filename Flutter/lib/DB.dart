@@ -34,12 +34,13 @@ class ItemsDatabase {
     final List<Map<String, dynamic>> maps = await db.query('games');
     return List.generate(maps.length, (i) {
       return Item(
-        gameId: maps[i]['gameId'],
+        id: maps[i]['id'],
         name: maps[i]['name'],
-        section: maps[i]['section'],
-        recommendedAge: maps[i]['recommendedAge'],
-        numberOfPlayers: maps[i]['numberOfPlayers'],
-        availableStock: maps[i]['availableStock'],
+        description: maps[i]['description'],
+        image: maps[i]['image'],
+        category: maps[i]['category'],
+        units: maps[i]['units'],
+        price: maps[i]['price'],
       );
     });
   }
@@ -49,8 +50,8 @@ class ItemsDatabase {
     await db.update(
       'games',
       item.toMap(),
-      where: "gameId = ?",
-      whereArgs: [item.gameId],
+      where: "id = ?",
+      whereArgs: [item.id],
     );
   }
 
@@ -58,7 +59,7 @@ class ItemsDatabase {
     final db = await open();
     await db.delete(
       'games',
-      where: "gameId = ?",
+      where: "id = ?",
       whereArgs: [id],
     );
   }

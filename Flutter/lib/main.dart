@@ -37,79 +37,164 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final formKey = GlobalKey<FormState>();
 
-  Future<List<Item>> itemsList = ItemsList.getItems();
+  Future<List<Item>> itemsList = ItemsList.getItems('');
+  Future<List<String>> categoryList = ItemsList.getCategories();
 
   itemListView() => Expanded(
-      child: Card(
-          margin: const EdgeInsets.all(10),
-          child: FutureBuilder<List<Item>>(
-              future: itemsList,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return ListView.builder(
-                      padding: const EdgeInsets.all(5),
-                      itemCount: snapshot.data!.length,
-                      itemBuilder: (context, index) {
-                        Item item = snapshot.data![index];
+          child: Card(
+        margin: const EdgeInsets.all(10),
+        child: Column(
+          children: [
+            Container(
+              width: 700,
+              height: 24,
+              margin: const EdgeInsets.only(bottom: 5),
+              child: Center(
+                child: new Text("Categories:",
+                    style: new TextStyle(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.w500,
+                    )),
+              ),
+            ),
+            SizedBox(
+                width: 700,
+                height: 264,
+                child: FutureBuilder<List<String>>(
+                    future: categoryList,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return ListView.builder(
+                            padding: const EdgeInsets.all(5),
+                            itemCount: snapshot.data!.length,
+                            itemBuilder: (context, index) {
+                              String category = snapshot.data![index];
 
-                        return Container(
-                            padding: const EdgeInsets.all(10),
-                            margin: const EdgeInsets.only(top: 20),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(10),
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.3),
-                                  spreadRadius: 3,
-                                  blurRadius: 4,
-                                  offset: const Offset(0, 3),
-                                ),
-                              ],
-                            ),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text('Name: ${item.name}'),
-                                      Text('Section: ${item.section}'),
-                                      Text(
-                                          'Recommended Age: ${item.recommendedAge}'),
-                                      Text(
-                                          'Number Of Players: ${item.numberOfPlayers}'),
-                                      Text(
-                                          'Available Stock: ${item.availableStock.toString()}'),
+                              return new GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      itemsList = ItemsList.getItems(category);
+                                    });
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.all(10),
+                                    margin: const EdgeInsets.only(
+                                        top: 16, right: 30, left: 30),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: const BorderRadius.all(
+                                        Radius.circular(10),
+                                      ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.withOpacity(0.3),
+                                          spreadRadius: 2,
+                                          blurRadius: 2,
+                                          offset: const Offset(0, 3),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Center(
+                                      child: Text('${category}'),
+                                    ),
+                                  ));
+                            });
+                      }
+                      if (snapshot.hasError) {
+                        return Text(snapshot.error.toString());
+                      }
+
+                      return const CircularProgressIndicator();
+                    })),
+            Container(
+              width: 700,
+              height: 24,
+              margin: const EdgeInsets.only(bottom: 5),
+              child: Center(
+                child: new Text("Items:",
+                    style: new TextStyle(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.w500,
+                    )),
+              ),
+            ),
+            SizedBox(
+                width: 700,
+                height: 264,
+                child: FutureBuilder<List<Item>>(
+                    future: itemsList,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return ListView.builder(
+                            padding: const EdgeInsets.all(5),
+                            itemCount: snapshot.data!.length,
+                            itemBuilder: (context, index) {
+                              Item item = snapshot.data![index];
+
+                              return Container(
+                                  padding: const EdgeInsets.all(10),
+                                  margin: const EdgeInsets.only(top: 20),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: const BorderRadius.all(
+                                      Radius.circular(10),
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.3),
+                                        spreadRadius: 3,
+                                        blurRadius: 4,
+                                        offset: const Offset(0, 3),
+                                      ),
                                     ],
                                   ),
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    IconButton(
-                                        onPressed: () =>
-                                            deleteItem(item.gameId),
-                                        color: Colors.red,
-                                        icon: const Icon(Icons.delete)),
-                                    IconButton(
-                                        onPressed: () => editItem(item),
-                                        icon: const Icon(Icons.edit)),
-                                  ],
-                                )
-                              ],
-                            ));
-                      });
-                }
-                if (snapshot.hasError) {
-                  return Text(snapshot.error.toString());
-                }
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text('Name: ${item.name}'),
+                                            Text(
+                                                'Description: ${item.description}'),
+                                            Text('Image: ${item.image}'),
+                                            Text('Category: ${item.category}'),
+                                            Text(
+                                                'Units: ${item.units.toString()}'),
+                                            Text(
+                                                'Price: ${item.price.toString()}'),
+                                          ],
+                                        ),
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          IconButton(
+                                              onPressed: () =>
+                                                  deleteItem(item.id),
+                                              color: Colors.red,
+                                              icon: const Icon(Icons.delete)),
+                                          IconButton(
+                                              // onPressed: () => editItem(item),
+                                              onPressed: () => {},
+                                              icon: const Icon(Icons.edit)),
+                                        ],
+                                      )
+                                    ],
+                                  ));
+                            });
+                      }
+                      if (snapshot.hasError) {
+                        return Text(snapshot.error.toString());
+                      }
 
-                return const CircularProgressIndicator();
-              })));
+                      return const CircularProgressIndicator();
+                    })),
+          ],
+        ),
+      ));
 
   deleteItem(itemId) {
     showDialog(
@@ -150,7 +235,8 @@ class _MyHomePageState extends State<MyHomePage> {
                           });
                     }
                     setState(() {
-                      itemsList = ItemsList.getItems();
+                      itemsList = ItemsList.getItems('');
+                      categoryList = ItemsList.getCategories();
                     });
                     Navigator.of(context).pop();
                   },
@@ -163,43 +249,43 @@ class _MyHomePageState extends State<MyHomePage> {
         });
   }
 
-  editItem(item) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return UpdateItemPage(item: item);
-    })).then((value) async {
-      try {
-        await ItemsList.updateItem(Item(
-            name: value.name,
-            section: value.section,
-            recommendedAge: value.recommendedAge,
-            numberOfPlayers: value.numberOfPlayers,
-            availableStock: value.availableStock,
-            gameId: item.ItemId));
-      } catch (e) {
-        // showDialog
-        showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: const Text("Error"),
-                content: Text(e.toString()),
-                actions: [
-                  TextButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: const Text(
-                        "OK",
-                        style: TextStyle(color: Colors.grey),
-                      )),
-                ],
-              );
-            });
-      }
-
-      return setState(() {
-        itemsList = ItemsList.getItems();
-      });
-    });
-  }
+  // editItem(item) {
+  //   Navigator.push(context, MaterialPageRoute(builder: (context) {
+  //     return UpdateItemPage(item: item);
+  //   })).then((value) async {
+  //     try {
+  //       await ItemsList.updateItem(Item(
+  //           name: value.name,
+  //           section: value.section,
+  //           recommendedAge: value.recommendedAge,
+  //           numberOfPlayers: value.numberOfPlayers,
+  //           availableStock: value.availableStock,
+  //           gameId: item.ItemId));
+  //     } catch (e) {
+  //       // showDialog
+  //       showDialog(
+  //           context: context,
+  //           builder: (BuildContext context) {
+  //             return AlertDialog(
+  //               title: const Text("Error"),
+  //               content: Text(e.toString()),
+  //               actions: [
+  //                 TextButton(
+  //                     onPressed: () => Navigator.of(context).pop(),
+  //                     child: const Text(
+  //                       "OK",
+  //                       style: TextStyle(color: Colors.grey),
+  //                     )),
+  //               ],
+  //             );
+  //           });
+  //     }
+  //
+  //     return setState(() {
+  //       itemsList = ItemsList.getItems('');
+  //     });
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -223,11 +309,12 @@ class _MyHomePageState extends State<MyHomePage> {
             try {
               await ItemsList.insertItem(Item(
                   name: value.name,
-                  section: value.section,
-                  recommendedAge: value.recommendedAge,
-                  numberOfPlayers: value.numberOfPlayers,
-                  availableStock: value.availableStock,
-                  gameId: -1));
+                  description: value.description,
+                  image: value.image,
+                  category: value.category,
+                  units: value.units,
+                  price: value.price,
+                  id: -1));
             } catch (e) {
               // showDialog
               showDialog(
@@ -249,7 +336,8 @@ class _MyHomePageState extends State<MyHomePage> {
             }
 
             return setState(() {
-              itemsList = ItemsList.getItems();
+              itemsList = ItemsList.getItems('');
+              categoryList = ItemsList.getCategories();
             });
           });
         },

@@ -6,8 +6,15 @@ import "DB.dart";
 // exceptions are forwarded to be catched by the flutter component which displays alert
 
 class ItemsList {
-  static Future<List<Item>> getItems() async {
-    return ItemsServer.getItems();
+  static Future<List<Item>> getItems(String category) async {
+    if(category.isEmpty){
+      return [];
+    }
+    return ItemsServer.getItems(category);
+  }
+
+  static Future<List<String>> getCategories() async {
+    return ItemsServer.getCategories();
   }
 
   static Future<void> insertItem(Item item) async {
@@ -22,7 +29,7 @@ class ItemsList {
 
   static Future<void> updateItem(Item item) async {
     try {
-      await ItemsServer.updateItem(item);
+      // await ItemsServer.updateItem(item);
       log("updated item: $item");
     } catch (e) {
       log("error updating item: $e");

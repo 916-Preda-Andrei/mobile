@@ -12,12 +12,14 @@ class AddItemPage extends StatefulWidget {
 class AddItemState extends State<AddItemPage> {
   final formKey = GlobalKey<FormState>();
   Item item = Item(
-      gameId: -1,
+      id: -1,
       name: '',
-      section: '',
-      recommendedAge: '',
-      numberOfPlayers: '',
-      availableStock: 0);
+      description: '',
+      image: '',
+      category: '',
+      units: 0,
+      price: 0.0,
+  );
 
   _form() {
     return Container(
@@ -41,12 +43,12 @@ class AddItemState extends State<AddItemPage> {
             ),
             TextFormField(
               decoration: const InputDecoration(
-                labelText: 'Item Section',
+                labelText: 'Item Description',
               ),
-              onSaved: (value) => setState(() => item.section = value!),
+              onSaved: (value) => setState(() => item.description = value!),
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter a non-empty item section';
+                  return 'Please enter a non-empty item description';
                 }
 
                 return null;
@@ -54,12 +56,12 @@ class AddItemState extends State<AddItemPage> {
             ),
             TextFormField(
               decoration: const InputDecoration(
-                labelText: 'Recommended Age',
+                labelText: 'Image',
               ),
-              onSaved: (value) => setState(() => item.recommendedAge = value!),
+              onSaved: (value) => setState(() => item.image = value!),
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter a non-empty Recommended Age';
+                  return 'Please enter a non-empty Image';
                 }
 
                 return null;
@@ -67,12 +69,12 @@ class AddItemState extends State<AddItemPage> {
             ),
             TextFormField(
               decoration: const InputDecoration(
-                labelText: 'Number of Players',
+                labelText: 'Category',
               ),
-              onSaved: (value) => setState(() => item.numberOfPlayers = value!),
+              onSaved: (value) => setState(() => item.category = value!),
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter a non-empty number of players';
+                  return 'Please enter a non-empty category';
                 }
 
                 return null;
@@ -80,17 +82,34 @@ class AddItemState extends State<AddItemPage> {
             ),
             TextFormField(
               decoration: const InputDecoration(
-                labelText: 'Available Stock',
+                labelText: 'Units',
               ),
               onSaved: (value) => setState(() {
-                item.availableStock = int.tryParse(value!)!;
+                item.units = int.tryParse(value!)!;
               }),
               validator: (value) {
                 if (value == null ||
                     value.isEmpty ||
                     int.tryParse(value) == null ||
                     int.tryParse(value)! < 0) {
-                  return 'Please enter a valid available stock';
+                  return 'Please enter a valid units';
+                }
+                return null;
+              },
+            ),
+            TextFormField(
+              decoration: const InputDecoration(
+                labelText: 'Price',
+              ),
+              onSaved: (value) => setState(() {
+                item.price = double.tryParse(value!)!;
+              }),
+              validator: (value) {
+                if (value == null ||
+                    value.isEmpty ||
+                    double.tryParse(value) == null ||
+                    double.tryParse(value)! < 0.0) {
+                  return 'Please enter a valid price';
                 }
                 return null;
               },
